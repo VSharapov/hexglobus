@@ -2,19 +2,27 @@
 <html lang="en">
 	<head>
 		<title>test</title>
-		<script src="reload.js"></script>
+		<!-- <script src="reload.js"></script> -->
 		<style type="text/css">
 			canvas {
-				background: gray;
+				background: WhiteSmoke;
 			}
 			body {
 				margin:0;
 				overflow:hidden;
 			}
+			section {
+				float: left;
+				width: 50%;
+			}
 		</style>
 	</head>
 	<body>
-		<canvas></canvas>
+		<section><canvas></canvas></section>
+		<section style="overflow-y:scroll; height:90%">
+			<h1> test </h1>
+			<input type="text" name="hex-distance" value="60" />
+		</section>
 		<script src="canvas.js"></script>
 	</body>
 </html>
