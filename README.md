@@ -3,6 +3,8 @@ An experiment in hexmapping
 
 v0.1 is an HTML5 webpage that can display a small hexmap, with the following interactions:
 
+- Generate a random hex property (fill color)
+- Store & retrieve generated hexes as a base64 string
 - See the coordinates and scale of the hex in the center of view
 - Set coordinates and scale to go to a different hex.
 - Toggle the grid for multiple scales, stroke width, color, transparency.
