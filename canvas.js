@@ -1,9 +1,12 @@
 var canvas = document.querySelector('canvas')
 
-canvas.width=window.innerWidth * (49.0 / 100.0);
+percentageWidth = 50.0;
+canvas.width=window.innerWidth * (percentageWidth / 100.0);
 canvas.height=window.innerHeight;
+console.log(canvas);
 
 var c = canvas.getContext('2d');
+
 
 function getRandomColor() {
 	var letters = '0123456789ABCDEF';
@@ -14,11 +17,44 @@ function getRandomColor() {
 	return color;
 }
 
-function drawHexagon(centerX, centerY) {
-	r = parseFloat(document.querySelector("input[name='hex-distance']").value)/2;
-	R = r / Math.cos(Math.PI / 6)
-	console.log(r);
-	console.log(R);
+function invertColor(hex, bw) {
+    if (hex.indexOf('#') === 0) {
+        hex = hex.slice(1);
+    }
+    // convert 3-digit hex to 6-digits.
+    if (hex.length === 3) {
+        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    }
+    if (hex.length !== 6) {
+        throw new Error('Invalid HEX color.');
+    }
+    var r = parseInt(hex.slice(0, 2), 16),
+        g = parseInt(hex.slice(2, 4), 16),
+        b = parseInt(hex.slice(4, 6), 16);
+    if (bw) {
+        // http://stackoverflow.com/a/3943023/112731
+        return (r * 0.299 + g * 0.587 + b * 0.114) > 186
+            ? '#000000'
+            : '#FFFFFF';
+    }
+    // invert color components
+    r = (255 - r).toString(16);
+    g = (255 - g).toString(16);
+    b = (255 - b).toString(16);
+    // pad each with zeros and return
+    return "#" + padZero(r) + padZero(g) + padZero(b);
+}
+
+function padZero(str, len) {
+    len = len || 2;
+    var zeros = new Array(len).join('0');
+    return (zeros + str).slice(-len);
+}
+
+function drawHexagon(centerX, centerY, d, hexText="") {
+	r = d/2;
+	R = r / Math.cos(Math.PI / 6);
+	console.log([r, R, centerX, centerY]);
 	c.fillStyle = getRandomColor();
 	c.beginPath();
 	c.moveTo(centerX + R, centerY);
@@ -29,5 +65,41 @@ function drawHexagon(centerX, centerY) {
 	c.lineTo(centerX + R/2, centerY - r);
 	c.closePath();
 	c.fill();
+	c.font = "16px Arial";
+	c.fillStyle = invertColor(c.fillStyle, 1);
+	c.textAlign = "center";
+	c.fillText(hexText, centerX, centerY);
 }
-drawHexagon(0, 0)
+
+function hexCoordsToCanvasCoords(row, col, settings) {
+	x = row * settings.columnSpacing;
+	y = col * settings.rowSpacing;
+	if(row % 2){
+		// even rows are normal
+	}else{
+		y += settings.rowSpacing / 2;
+	}
+	return [x + canvas.width/2, y + canvas.height/2];
+}
+
+function drawScene(settings) {
+	settings.columnSpacing = settings.hexMajorDiameter/2 + (settings.hexMinorDiameter/4);
+	settings.rowSpacing = settings.hexMinorDiameter;
+	
+	for(var i = -2; i <= 2; i++){
+		for(var j = -2; j <= 2; j++){
+			coords = hexCoordsToCanvasCoords(i, j, settings);
+			drawHexagon(coords[0], coords[1], settings.hexMinorDiameter, i + ", " + j);
+		}
+	}
+}
+
+function main() {
+	var sceneSettings = new Object();
+	sceneSettings.hexMinorDiameter = parseFloat(document.querySelector("input[name='hex-distance']").value),
+	sceneSettings.hexMajorDiameter = sceneSettings.hexMinorDiameter / Math.cos(Math.PI / 6)
+
+	drawScene(sceneSettings);
+}
+
+main();
