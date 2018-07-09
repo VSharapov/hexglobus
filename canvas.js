@@ -3,7 +3,6 @@ var canvas = document.querySelector('canvas')
 percentageWidth = 50.0;
 canvas.width=window.innerWidth * (percentageWidth / 100.0);
 canvas.height=window.innerHeight;
-console.log(canvas);
 
 var c = canvas.getContext('2d');
 
@@ -54,7 +53,6 @@ function padZero(str, len) {
 function drawHexagon(centerX, centerY, d, hexText="") {
 	r = d/2;
 	R = r / Math.cos(Math.PI / 6);
-	console.log([r, R, centerX, centerY]);
 	c.fillStyle = getRandomColor();
 	c.beginPath();
 	c.moveTo(centerX + R, centerY);
@@ -65,9 +63,10 @@ function drawHexagon(centerX, centerY, d, hexText="") {
 	c.lineTo(centerX + R/2, centerY - r);
 	c.closePath();
 	c.fill();
-	c.font = "16px Arial";
+	c.font = Math.floor(d/4) + "px Arial";
 	c.fillStyle = invertColor(c.fillStyle, 1);
 	c.textAlign = "center";
+	c.textBaseline = "middle";
 	c.fillText(hexText, centerX, centerY);
 }
 
@@ -86,12 +85,23 @@ function drawScene(settings) {
 	settings.columnSpacing = settings.hexMajorDiameter/2 + (settings.hexMinorDiameter/4);
 	settings.rowSpacing = settings.hexMinorDiameter;
 	
-	for(var i = -2; i <= 2; i++){
-		for(var j = -2; j <= 2; j++){
+	// Rounding can make blank areas on the edges when the division is close, but it's not too bad
+	firstVisibleColumn = -Math.ceil((canvas.width-settings.hexMajorDiameter/2)/(3*(settings.hexMajorDiameter/2)));
+	finalVisibleColumn = -firstVisibleColumn;
+	firstVisibleRow = -Math.floor(canvas.height / (2*settings.hexMinorDiameter));
+	finalVisibleRow = -firstVisibleRow;
+	console.log(firstVisibleColumn, finalVisibleColumn, firstVisibleRow, finalVisibleRow);
+	
+	console.time('drawing');
+	for(var i = firstVisibleColumn; i <= finalVisibleColumn; i++){
+		for(var j = firstVisibleRow; j <= finalVisibleRow; j++){
 			coords = hexCoordsToCanvasCoords(i, j, settings);
-			drawHexagon(coords[0], coords[1], settings.hexMinorDiameter, i + ", " + j);
+			var hexText = i + ", " + j;
+			// hexText += (i==firstVisibleColumn ? "!" : "");
+			drawHexagon(coords[0], coords[1], settings.hexMinorDiameter, hexText);
 		}
 	}
+	console.timeEnd('drawing');
 }
 
 function main() {
