@@ -1,8 +1,11 @@
 var canvas = document.querySelector('canvas')
 
-percentageWidth = 50.0;
-canvas.width=window.innerWidth * (percentageWidth / 100.0);
-canvas.height=window.innerHeight;
+function initSize() {
+	percentageWidth = 50.0;
+	canvas.width=window.innerWidth * (percentageWidth / 100.0);
+	canvas.height=window.innerHeight;
+}
+initSize();
 
 var c = canvas.getContext('2d');
 
@@ -107,11 +110,8 @@ function generateDeterministicColor(i, j) {
 	seedString = "" + i + ", " + j;
 	var tempRNG = new Random(seedString.hashCode());
 	// The prng is pretty simple, so I just added iterations until I stopped seeing patterns
-	randomNumber = tempRNG.next();
-	randomNumber = tempRNG.next();
-	randomNumber = tempRNG.next();
-	randomNumber = tempRNG.next();
-	randomNumber = tempRNG.next();
+	randomIterations = parseInt(document.querySelector("input[name='random-iterations']").value);
+	for(var i = 0; i < randomIterations; i++){randomNumber = tempRNG.next();};
 	moddedNumber = randomNumber % 0x1000000;
 	flooredNumber = Math.floor(moddedNumber);
 	color = getIntColor(flooredNumber);
@@ -140,10 +140,17 @@ function drawScene(settings) {
 
 function main() {
 	var sceneSettings = new Object();
-	sceneSettings.hexMinorDiameter = parseFloat(document.querySelector("input[name='hex-distance']").value),
-	sceneSettings.hexMajorDiameter = sceneSettings.hexMinorDiameter / Math.cos(Math.PI / 6)
 
-	drawScene(sceneSettings);
+	function redraw() {
+		sceneSettings.hexMinorDiameter = parseFloat(document.querySelector("input[name='hex-distance']").value),
+		sceneSettings.hexMajorDiameter = sceneSettings.hexMinorDiameter / Math.cos(Math.PI / 6)
+		initSize();
+		drawScene(sceneSettings);
+		console.log("Drawn");
+	}
+	redraw();
+	
+	window.addEventListener('resize', redraw);
 }
 
 main();
