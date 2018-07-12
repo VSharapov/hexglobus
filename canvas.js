@@ -1,7 +1,7 @@
 var canvas = document.querySelector('canvas')
 
 function initSize() {
-	percentageWidth = 50.0;
+	var percentageWidth = 50.0;
 	canvas.width=window.innerWidth * (percentageWidth / 100.0);
 	canvas.height=window.innerHeight;
 }
@@ -96,8 +96,8 @@ function drawHexagon(centerX, centerY, d, hexText="", hexColor="random") {
 }
 
 function hexCoordsToCanvasCoords(row, col, settings) {
-	x = row * settings.columnSpacing;
-	y = col * settings.rowSpacing;
+	var x = row * settings.columnSpacing;
+	var y = col * settings.rowSpacing;
 	if(row % 2){
 		// even rows are "normal", odd rows are offset downwards
 	}else{
@@ -107,14 +107,14 @@ function hexCoordsToCanvasCoords(row, col, settings) {
 }
 
 function generateDeterministicColor(i, j) {
-	seedString = "" + i + ", " + j;
+	var seedString = "" + i + ", " + j;
 	var tempRNG = new Random(seedString.hashCode());
 	// The prng is pretty simple, so I just added iterations until I stopped seeing patterns
-	randomIterations = parseInt(document.querySelector("input[name='random-iterations']").value);
+	var randomIterations = parseInt(document.querySelector("input[name='random-iterations']").value);
 	for(var i = 0; i < randomIterations; i++){randomNumber = tempRNG.next();};
-	moddedNumber = randomNumber % 0x1000000;
-	flooredNumber = Math.floor(moddedNumber);
-	color = getIntColor(flooredNumber);
+	var moddedNumber = randomNumber % 0x1000000;
+	var flooredNumber = Math.floor(moddedNumber);
+	var color = getIntColor(flooredNumber);
 	return color;
 }
 
@@ -123,17 +123,19 @@ function drawScene(settings) {
 	settings.rowSpacing = settings.hexMinorDiameter;
 	
 	// Rounding can make blank areas on the edges when the division is close, but it's not too bad
-	firstVisibleColumn = -Math.ceil((canvas.width-settings.hexMajorDiameter/2)/(3*(settings.hexMajorDiameter/2)));
-	finalVisibleColumn = -firstVisibleColumn;
-	firstVisibleRow = -Math.floor(canvas.height / (2*settings.hexMinorDiameter));
-	finalVisibleRow = -firstVisibleRow;
+	var firstVisibleColumn = -Math.ceil((canvas.width-settings.hexMajorDiameter/2)/(3*(settings.hexMajorDiameter/2)));
+	var finalVisibleColumn = -firstVisibleColumn;
+	var firstVisibleRow = -Math.floor(canvas.height / (2*settings.hexMinorDiameter));
+	var finalVisibleRow = -firstVisibleRow;
 	
 	for(var i = firstVisibleColumn; i <= finalVisibleColumn; i++){
 		for(var j = firstVisibleRow; j <= finalVisibleRow; j++){
-			coords = hexCoordsToCanvasCoords(i, j, settings);
-			hexColor = generateDeterministicColor(i, j);
-			var hexText = i + ", " + j;
-			drawHexagon(coords[0], coords[1], settings.hexMinorDiameter, hexText, hexColor);
+			x = i + settings.hexOffsetX;
+			y = j + settings.hexOffsetY;
+			screenCoords = hexCoordsToCanvasCoords(i, j, settings);
+			hexColor = generateDeterministicColor(x, y);
+			hexText = x + ", " + y;
+			drawHexagon(screenCoords[0], screenCoords[1], settings.hexMinorDiameter, hexText, hexColor);
 		}
 	}
 }
@@ -142,15 +144,17 @@ function main() {
 	var sceneSettings = new Object();
 
 	function redraw() {
-		sceneSettings.hexMinorDiameter = parseFloat(document.querySelector("input[name='hex-distance']").value),
-		sceneSettings.hexMajorDiameter = sceneSettings.hexMinorDiameter / Math.cos(Math.PI / 6)
+		sceneSettings.hexMinorDiameter = parseFloat(document.querySelector("input[name='hex-distance']").value);
+		sceneSettings.hexMajorDiameter = sceneSettings.hexMinorDiameter / Math.cos(Math.PI / 6);
+		sceneSettings.hexOffsetX = parseFloat(document.querySelector("input[name='view-coordinate-x']").value);
+		sceneSettings.hexOffsetY = parseFloat(document.querySelector("input[name='view-coordinate-y']").value);
 		initSize();
 		drawScene(sceneSettings);
-		console.log("Drawn");
 	}
 	redraw();
 	
 	window.addEventListener('resize', redraw);
+	
 }
 
 main();
