@@ -206,8 +206,9 @@ function main() {
 	redraw();
 	
 	window.addEventListener('resize', redraw);
-	HTMLInputElementObject.addEventListener('input', redraw);
-
+	for(var i = 0; i < defaultSettings.length; i++){
+		document.getElementsByName(defaultSettings[i].name)[0].addEventListener('change', redraw);
+	}
 }
 
 main();
