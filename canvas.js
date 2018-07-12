@@ -125,7 +125,7 @@ function drawScene(settings) {
 	// Rounding can make blank areas on the edges when the division is close, but it's not too bad
 	var firstVisibleColumn = -Math.ceil((canvas.width-settings.hexMajorDiameter/2)/(3*(settings.hexMajorDiameter/2)));
 	var finalVisibleColumn = -firstVisibleColumn;
-	var firstVisibleRow = -Math.floor(canvas.height / (2*settings.hexMinorDiameter));
+	var firstVisibleRow = -Math.ceil(canvas.height / (2*settings.hexMinorDiameter));
 	var finalVisibleRow = -firstVisibleRow;
 	
 	for(var i = firstVisibleColumn; i <= finalVisibleColumn; i++){
@@ -140,7 +140,58 @@ function drawScene(settings) {
 	}
 }
 
+function Setting(
+	displayName="Unnamed setting",
+	inputType="text",
+	name="",
+	value="",
+	size="",
+	suffix=""
+){
+	this.displayName=displayName,
+	this.inputType=inputType,
+	this.name=name,
+	this.value=value,
+	this.size=size,
+	this.suffix=suffix
+}
+
+function makeSettingsInterface(defaultSettings) {
+	for(var i = 0; i < defaultSettings.length; i++){
+		var htmlText = defaultSettings[i].displayName +
+			': <input type="' + defaultSettings[i].inputType +
+			'" '
+		;
+		if(defaultSettings[i].name != ""){
+			htmlText += 'name="' + defaultSettings[i].name + '" ';
+		}
+		if(defaultSettings[i].value != ""){
+			htmlText += 'value="' + defaultSettings[i].value + '" ';
+		}
+		if(defaultSettings[i].size != ""){
+			htmlText += 'size=' + defaultSettings[i].size + ' ';
+		}
+		htmlText += '/>';
+		// This makes some broken buttons, which are redundant anyway (at least in chrome)
+		//if(defaultSettings[i].ladder){
+		//	var quotedName
+		//	htmlText += "<button onclick=\"document.getElementsByName('" + defaultSettings[i].name + "').stepUp(1);\">+</button>";
+		//	htmlText += "<button onclick=\"document.getElementsByName('" + defaultSettings[i].name + "').stepUp(-1);\">-</button>";
+		//}
+		htmlText += defaultSettings[i].suffix + '<br />\n';
+		document.getElementById('settings').innerHTML += htmlText;
+	}
+}
+
 function main() {
+	var defaultSettings = [
+		new Setting("Hex size (minor diameter)", "number", "hex-distance", "60", "4", "px"),
+		new Setting("Random iterations", "number", "random-iterations", "3", "4", " (The prng isn't always random enough, so the lazy fix is to change iterations)"),
+		new Setting("View coordinate X", "number", "view-coordinate-x", "-2", "4"),
+		new Setting("View coordinate Y", "number", "view-coordinate-y", "-6", "4")
+	]
+	makeSettingsInterface(defaultSettings);
+
 	var sceneSettings = new Object();
 
 	function redraw() {
