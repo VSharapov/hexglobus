@@ -131,13 +131,13 @@ function drawScene(settings) {
 	for(var i = firstVisibleColumn; i <= finalVisibleColumn; i++){
 		for(var j = firstVisibleRow; j <= finalVisibleRow; j++){
 			var x = i + settings.hexOffsetX;
-			// If the screen is centered on an odd hex-column, then odd screen-columns
+			// If the screen is centered on an odd hex-column, then even screen-columns
 			// will still be shifted one half-hex up, even though they should get
-			// shifted down, and an easy fix for this is to shift all odd columns.
-			var y = j + settings.hexOffsetY + (settings.hexOffsetX%2 && i%2);
+			// shifted down, and an easy fix for this is to shift them.
+			var y = j + settings.hexOffsetY + (settings.hexOffsetX%2 && !(i%2) ? 1 : 0);
 			var screenCoords = hexCoordsToCanvasCoords(i, j, settings);
 			var hexColor = generateDeterministicColor(x, y);
-			var hexText = i + ", " + j;
+			var hexText = x + ", " + y;
 			drawHexagon(screenCoords[0], screenCoords[1], settings.hexMinorDiameter, hexText, hexColor);
 		}
 	}
