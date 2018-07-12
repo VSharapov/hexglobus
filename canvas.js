@@ -173,6 +173,7 @@ function makeSettingsInterface(defaultSettings) {
 		}
 		htmlText += '/>';
 		// This makes some broken buttons, which are redundant anyway (at least in chrome)
+		// Ahh, it's probably because getElementsByName()[0] should be used, oh well
 		//if(defaultSettings[i].ladder){
 		//	var quotedName
 		//	htmlText += "<button onclick=\"document.getElementsByName('" + defaultSettings[i].name + "').stepUp(1);\">+</button>";
@@ -205,7 +206,8 @@ function main() {
 	redraw();
 	
 	window.addEventListener('resize', redraw);
-	
+	HTMLInputElementObject.addEventListener('input', redraw);
+
 }
 
 main();
