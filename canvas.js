@@ -95,11 +95,11 @@ function drawHexagon(centerX, centerY, d, hexText="", hexColor="random") {
 	c.fillText(hexText, centerX, centerY);
 }
 
-function hexCoordsToCanvasCoords(row, col, settings) {
-	var x = row * settings.columnSpacing;
-	var y = col * settings.rowSpacing;
-	if(row % 2){
-		// even rows are "normal", odd rows are offset downwards
+function hexCoordsToCanvasCoords(screenX, screenY, settings) {
+	var x = screenX * settings.columnSpacing;
+	var y = screenY * settings.rowSpacing;
+	if(screenX % 2){
+		// even columns are "normal", odd columns are offset upwards
 	}else{
 		y += settings.rowSpacing / 2;
 	}
@@ -130,11 +130,14 @@ function drawScene(settings) {
 	
 	for(var i = firstVisibleColumn; i <= finalVisibleColumn; i++){
 		for(var j = firstVisibleRow; j <= finalVisibleRow; j++){
-			x = i + settings.hexOffsetX;
-			y = j + settings.hexOffsetY;
-			screenCoords = hexCoordsToCanvasCoords(i, j, settings);
-			hexColor = generateDeterministicColor(x, y);
-			hexText = x + ", " + y;
+			var x = i + settings.hexOffsetX;
+			// If the screen is centered on an odd hex-column, then odd screen-columns
+			// will still be shifted one half-hex up, even though they should get
+			// shifted down, and an easy fix for this is to shift all odd columns.
+			var y = j + settings.hexOffsetY + (settings.hexOffsetX%2 && i%2);
+			var screenCoords = hexCoordsToCanvasCoords(i, j, settings);
+			var hexColor = generateDeterministicColor(x, y);
+			var hexText = i + ", " + j;
 			drawHexagon(screenCoords[0], screenCoords[1], settings.hexMinorDiameter, hexText, hexColor);
 		}
 	}
