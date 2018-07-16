@@ -194,6 +194,7 @@ function main() {
 	var sceneSettings = new Object();
 
 	function redraw() {
+		initSize();
 		sceneSettings.hexMinorDiameter = loadSetting('hex-size');
 		sceneSettings.hexMajorDiameter = sceneSettings.hexMinorDiameter / Math.cos(Math.PI / 6);
 		sceneSettings.columnSpacing = sceneSettings.hexMajorDiameter/2 + (sceneSettings.hexMinorDiameter/4);
@@ -214,7 +215,6 @@ function main() {
 			sceneSettings.hexOffsetY
 		);
 		hexagons.generateVisible(sceneSettings.visibility, hexagonSettings);
-		initSize();
 		drawScene(sceneSettings, hexagons);
 	}
 	redraw();
