@@ -101,7 +101,12 @@ function makeSettingsInterface(defaultSettings) {
 }
 
 function loadSetting(name){
-	return parseFloat(document.querySelector("input[name='" + name + "']").value);
+	if(document.querySelector("input[name='" + name + "']").type == "number"){
+		return parseFloat(document.querySelector("input[name='" + name + "']").value);
+	}
+	if(document.querySelector("input[name='" + name + "']").type == "checkbox"){
+		return document.querySelector("input[name='" + name + "']").checked;
+	}
 }
 
 function drawHexagon(c, centerX, centerY, d, hexagon) {
@@ -126,6 +131,7 @@ function drawHexagon(c, centerX, centerY, d, hexagon) {
 }
 
 function drawScene(sceneSettings, hexagons) {
+	sceneSettings.canvasContext.globalAlpha = 1 - 0.5 * sceneSettings.transparency;
 	for(var i = sceneSettings.visibility.firstColumn; i <= sceneSettings.visibility.finalColumn; i++){
 		for(var j = sceneSettings.visibility.firstRow; j <= sceneSettings.visibility.finalRow; j++){
 			var x = i + sceneSettings.hexOffsetX;
@@ -183,6 +189,7 @@ function main() {
 	var defaultSettings = [
 		new Setting("Hex size (minor diameter)", "number", "hex-size", "60", "4", "px"),
 		new Setting("Random iterations", "number", "random-iterations", "3", "4", " (The prng isn't always random enough, so the lazy fix is to change iterations)"),
+		new Setting("Transparency", "checkbox", "transparency", "", "", " Makes everything 50% opaque"),
 		new Setting("View coordinate X", "number", "view-coordinate-x", "-2", "4"),
 		new Setting("View coordinate Y", "number", "view-coordinate-y", "-6", "4")
 	]
@@ -201,6 +208,7 @@ function main() {
 		sceneSettings.columnSpacing = sceneSettings.hexMajorDiameter/2 + (sceneSettings.hexMinorDiameter/4);
 		sceneSettings.rowSpacing = sceneSettings.hexMinorDiameter;
 		hexagonSettings.rngSettings.minimumIterations = loadSetting('random-iterations');
+		sceneSettings.transparency = loadSetting('transparency');
 		sceneSettings.hexOffsetX = loadSetting('view-coordinate-x');
 		sceneSettings.hexOffsetY = loadSetting('view-coordinate-y');
 		// TODO: scale zero should be variable
