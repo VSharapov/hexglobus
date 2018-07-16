@@ -143,6 +143,7 @@ function drawScene(sceneSettings, hexagons) {
 			);
 		}
 	}
+	document.getElementById('status').value='Finished';
 }
 
 function sceneVisibility(canvas, hexMajorDiameter, hexMinorDiameter, scale, offsetX, offsetY){
@@ -169,7 +170,7 @@ function sceneVisibility(canvas, hexMajorDiameter, hexMinorDiameter, scale, offs
 }
 
 function main() {
-	var canvas = document.querySelector('canvas')
+	var canvas = document.querySelector('canvas');
 
 	function initSize() {
 		var percentageWidth = 50.0;
@@ -215,7 +216,10 @@ function main() {
 			sceneSettings.hexOffsetY
 		);
 		hexagons.generateVisible(sceneSettings.visibility, hexagonSettings);
+		document.getElementById('status').value='Rendering...';
+		setTimeout(function(){
 		drawScene(sceneSettings, hexagons);
+		}, 0);
 	}
 	redraw();
 	
