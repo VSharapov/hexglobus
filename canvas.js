@@ -1,14 +1,3 @@
-var canvas = document.querySelector('canvas')
-
-function initSize() {
-	var percentageWidth = 50.0;
-	canvas.width=window.innerWidth * (percentageWidth / 100.0);
-	canvas.height=window.innerHeight;
-}
-initSize();
-
-var c = canvas.getContext('2d');
-
 function stripAlpha(colorString) {
 	if(colorString.length > 7) {
 		return colorString.slice(0, 7);
@@ -17,15 +6,6 @@ function stripAlpha(colorString) {
 	}
 }
 
-function getIntColor(num) {
-	// num >>>= 0;
-	// var b = num & 0xFF,
-	//     g = (num & 0xFF00) >>> 8,
-	//     r = (num & 0xFF0000) >>> 16,
-	//     a = (num & 0xFF000000) >>> 24;
-	// return "#" + r.toString(16) + g.toString(16) + b.toString(16) + a.toString(16);
-	return "#" + padZero(num.toString(16), 6);
-}
 
 function getRandomColor() {
 	var letters = '0123456789ABCDEF';
@@ -64,37 +44,6 @@ function invertColor(hex, bw) {
     return "#" + padZero(r) + padZero(g) + padZero(b);
 }
 
-function padZero(str, len) {
-    len = len || 2;
-    var zeros = new Array(len).join('0');
-    return (zeros + str).slice(-len);
-}
-
-function drawHexagon(centerX, centerY, d, hexText="", hexColor="random") {
-	r = d/2;
-	R = r / Math.cos(Math.PI / 6);
-	if(hexColor != "random"){
-		c.fillStyle = hexColor;
-	} else {
-		c.fillStyle = getRandomColor();
-	}
-	c.beginPath();
-	c.moveTo(centerX + R, centerY);
-	c.lineTo(centerX + R/2, centerY + r);
-	c.lineTo(centerX - R/2, centerY + r);
-	c.lineTo(centerX - R, centerY);
-	c.lineTo(centerX - R/2, centerY - r);
-	c.lineTo(centerX + R/2, centerY - r);
-	c.closePath();
-	c.fill();
-	fontFactor = 4; // This is about as big as you can go for printing 3 digit coordinates
-	c.font = Math.floor(d/fontFactor) + "px Arial";
-	c.fillStyle = invertColor(c.fillStyle, 1);
-	c.textAlign = "center";
-	c.textBaseline = "middle";
-	c.fillText(hexText, centerX, centerY);
-}
-
 function hexCoordsToCanvasCoords(screenX, screenY, settings) {
 	var x = screenX * settings.columnSpacing;
 	var y = screenY * settings.rowSpacing;
@@ -103,45 +52,9 @@ function hexCoordsToCanvasCoords(screenX, screenY, settings) {
 	}else{
 		y += settings.rowSpacing / 2;
 	}
-	return [x + canvas.width/2, y + canvas.height/2];
+	return [x + settings.canvas.width/2, y + settings.canvas.height/2];
 }
 
-function generateDeterministicColor(i, j) {
-	var seedString = "" + i + ", " + j;
-	var tempRNG = new Random(seedString.hashCode());
-	// The prng is pretty simple, so I just added iterations until I stopped seeing patterns
-	var randomIterations = parseInt(document.querySelector("input[name='random-iterations']").value);
-	for(var i = 0; i < randomIterations; i++){randomNumber = tempRNG.next();};
-	var moddedNumber = randomNumber % 0x1000000;
-	var flooredNumber = Math.floor(moddedNumber);
-	var color = getIntColor(flooredNumber);
-	return color;
-}
-
-function drawScene(settings) {
-	settings.columnSpacing = settings.hexMajorDiameter/2 + (settings.hexMinorDiameter/4);
-	settings.rowSpacing = settings.hexMinorDiameter;
-	
-	// Rounding can make blank areas on the edges when the division is close, but it's not too bad
-	var firstVisibleColumn = -Math.ceil((canvas.width-settings.hexMajorDiameter/2)/(3*(settings.hexMajorDiameter/2)));
-	var finalVisibleColumn = -firstVisibleColumn;
-	var firstVisibleRow = -Math.ceil(canvas.height / (2*settings.hexMinorDiameter));
-	var finalVisibleRow = -firstVisibleRow;
-	
-	for(var i = firstVisibleColumn; i <= finalVisibleColumn; i++){
-		for(var j = firstVisibleRow; j <= finalVisibleRow; j++){
-			var x = i + settings.hexOffsetX;
-			// If the screen is centered on an odd hex-column, then even screen-columns
-			// will still be shifted one half-hex up, even though they should get
-			// shifted down, and an easy fix for this is to shift them.
-			var y = j + settings.hexOffsetY + (settings.hexOffsetX%2 && !(i%2) ? 1 : 0);
-			var screenCoords = hexCoordsToCanvasCoords(i, j, settings);
-			var hexColor = generateDeterministicColor(x, y);
-			var hexText = x + ", " + y;
-			drawHexagon(screenCoords[0], screenCoords[1], settings.hexMinorDiameter, hexText, hexColor);
-		}
-	}
-}
 
 function Setting(
 	displayName="Unnamed setting",
@@ -187,24 +100,122 @@ function makeSettingsInterface(defaultSettings) {
 	}
 }
 
+function loadSetting(name){
+	return parseFloat(document.querySelector("input[name='" + name + "']").value);
+}
+
+function drawHexagon(c, centerX, centerY, d, hexagon) {
+	r = d/2;
+	R = r / Math.cos(Math.PI / 6);
+	c.fillStyle = hexagon.fillColor;
+	c.beginPath();
+	c.moveTo(centerX + R, centerY);
+	c.lineTo(centerX + R/2, centerY + r);
+	c.lineTo(centerX - R/2, centerY + r);
+	c.lineTo(centerX - R, centerY);
+	c.lineTo(centerX - R/2, centerY - r);
+	c.lineTo(centerX + R/2, centerY - r);
+	c.closePath();
+	c.fill();
+	fontFactor = 4; // This is about as big as you can go for printing 3 digit coordinates
+	c.font = Math.floor(d/fontFactor) + "px Arial";
+	c.fillStyle = invertColor(c.fillStyle, 1);
+	c.textAlign = "center";
+	c.textBaseline = "middle";
+	c.fillText(hexagon.text, centerX, centerY);
+}
+
+function drawScene(sceneSettings, hexagons) {
+	for(var i = sceneSettings.visibility.firstColumn; i <= sceneSettings.visibility.finalColumn; i++){
+		for(var j = sceneSettings.visibility.firstRow; j <= sceneSettings.visibility.finalRow; j++){
+			var x = i + sceneSettings.hexOffsetX;
+			// If the screen is centered on an odd hex-column, then even screen-columns
+			// will still be shifted one half-hex up, even though they should get
+			// shifted down, and an easy fix for this is to shift them.
+			var y = j + sceneSettings.hexOffsetY + (sceneSettings.hexOffsetX%2 && !(i%2) ? 1 : 0);
+			var screenCoords = hexCoordsToCanvasCoords(i, j, sceneSettings);
+			drawHexagon(
+				sceneSettings.canvasContext,
+				screenCoords[0],
+				screenCoords[1],
+				sceneSettings.hexMinorDiameter,
+				hexagons.getHex(sceneSettings.scale, x, y)
+			);
+		}
+	}
+}
+
+function sceneVisibility(canvas, hexMajorDiameter, hexMinorDiameter, scale, offsetX, offsetY){
+	// Rounding can make blank areas on the edges when the division is close, but it's not too bad
+	var visibility = new Object();
+	visibility.firstColumn = -Math.ceil(
+		(canvas.width-hexMajorDiameter/2)/(3*(hexMajorDiameter/2))
+	);
+	visibility.finalColumn = -visibility.firstColumn;
+	visibility.firstRow = -Math.ceil(canvas.height / (2*hexMinorDiameter));
+	visibility.finalRow = -visibility.firstRow;
+	visibility.list = [];
+	for(var i = visibility.firstColumn; i <= visibility.finalColumn; i++){
+		for(var j = visibility.firstRow; j <= visibility.finalRow; j++){
+			var x = i + offsetX;
+			// If the screen is centered on an odd hex-column, then even screen-columns
+			// will still be shifted one half-hex up, even though they should get
+			// shifted down, and an easy fix for this is to shift them.
+			var y = j + offsetY + (offsetX%2 && !(i%2) ? 1 : 0);
+			visibility.list.push({scale:scale, x:x, y:y});
+		}
+	}
+	return visibility;
+}
+
 function main() {
+	var canvas = document.querySelector('canvas')
+
+	function initSize() {
+		var percentageWidth = 50.0;
+		canvas.width=window.innerWidth * (percentageWidth / 100.0);
+		canvas.height=window.innerHeight;
+	}
+
+	var c = canvas.getContext('2d');
+
 	var defaultSettings = [
-		new Setting("Hex size (minor diameter)", "number", "hex-distance", "60", "4", "px"),
+		new Setting("Hex size (minor diameter)", "number", "hex-size", "60", "4", "px"),
 		new Setting("Random iterations", "number", "random-iterations", "3", "4", " (The prng isn't always random enough, so the lazy fix is to change iterations)"),
 		new Setting("View coordinate X", "number", "view-coordinate-x", "-2", "4"),
 		new Setting("View coordinate Y", "number", "view-coordinate-y", "-6", "4")
 	]
 	makeSettingsInterface(defaultSettings);
 
+	var hexagons = new Hexagons();
+	var hexagonSettings = new Object();
+	hexagonSettings.rngSettings = new Object();
+
 	var sceneSettings = new Object();
 
 	function redraw() {
-		sceneSettings.hexMinorDiameter = parseFloat(document.querySelector("input[name='hex-distance']").value);
+		sceneSettings.hexMinorDiameter = loadSetting('hex-size');
 		sceneSettings.hexMajorDiameter = sceneSettings.hexMinorDiameter / Math.cos(Math.PI / 6);
-		sceneSettings.hexOffsetX = parseFloat(document.querySelector("input[name='view-coordinate-x']").value);
-		sceneSettings.hexOffsetY = parseFloat(document.querySelector("input[name='view-coordinate-y']").value);
+		sceneSettings.columnSpacing = sceneSettings.hexMajorDiameter/2 + (sceneSettings.hexMinorDiameter/4);
+		sceneSettings.rowSpacing = sceneSettings.hexMinorDiameter;
+		hexagonSettings.rngSettings.minimumIterations = loadSetting('random-iterations');
+		sceneSettings.hexOffsetX = loadSetting('view-coordinate-x');
+		sceneSettings.hexOffsetY = loadSetting('view-coordinate-y');
+		// TODO: scale zero should be variable
+		sceneSettings.scale = 0;
+		sceneSettings.canvas = canvas;
+		sceneSettings.canvasContext = c;
+		sceneSettings.visibility=sceneVisibility(
+			canvas,
+			sceneSettings.hexMajorDiameter,
+			sceneSettings.hexMinorDiameter,
+			sceneSettings.scale,
+			sceneSettings.hexOffsetX,
+			sceneSettings.hexOffsetY
+		);
+		hexagons.generateVisible(sceneSettings.visibility, hexagonSettings);
 		initSize();
-		drawScene(sceneSettings);
+		drawScene(sceneSettings, hexagons);
 	}
 	redraw();
 	
@@ -214,4 +225,3 @@ function main() {
 	}
 }
 
-main();
