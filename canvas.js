@@ -179,7 +179,6 @@ function MouseController(){
 }
 
 MouseController.prototype.wheel = function (event) {
-	console.log(event)
 	var textBox = document.querySelector("input[name='" + "hex-size" + "']");
 	var changeDirection = 0;
 	if(event.deltaY > 0){ // Scroll down == zoom out
