@@ -4,7 +4,6 @@ fetch(urlToGetAllOpenIssues)
 		return response.json();
 	})
 	.then(function(myJson) {
-		console.log(myJson);
 		myJson.forEach(printIssue);
 	});
 

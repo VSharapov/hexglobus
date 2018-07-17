@@ -175,6 +175,22 @@ function sceneVisibility(canvas, hexMajorDiameter, hexMinorDiameter, scale, offs
 	return visibility;
 }
 
+function MouseController(){
+}
+
+MouseController.prototype.wheel = function (event) {
+	var textBox = document.querySelector("input[name='" + "hex-size" + "']");
+	var delta = 0;
+	if(event.deltaY > 0){ // Scroll down == zoom out
+		delta = -1;
+	}
+	if(event.deltaY < 0){ // Scroll up == zoom in
+		delta = 1;
+	}
+	textBox.value = parseFloat(textBox.value) + delta;
+	textBox.dispatchEvent(new Event('change'));
+}
+
 function main() {
 	var canvas = document.querySelector('canvas');
 
@@ -194,6 +210,12 @@ function main() {
 		new Setting("View coordinate Y", "number", "view-coordinate-y", "-6", "4")
 	]
 	makeSettingsInterface(defaultSettings);
+
+	var mouseController = new MouseController();
+	canvas.addEventListener('mousewheel',function(event){
+		mouseController.wheel(event);
+		return false; 
+	}, false);
 
 	var hexagons = new Hexagons();
 	var hexagonSettings = new Object();
@@ -226,7 +248,7 @@ function main() {
 		hexagons.generateVisible(sceneSettings.visibility, hexagonSettings);
 		document.getElementById('status').value='Rendering...';
 		setTimeout(function(){
-		drawScene(sceneSettings, hexagons);
+			drawScene(sceneSettings, hexagons);
 		}, 0);
 	}
 	redraw();
