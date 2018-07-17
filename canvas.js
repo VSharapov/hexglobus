@@ -179,15 +179,21 @@ function MouseController(){
 }
 
 MouseController.prototype.wheel = function (event) {
+	console.log(event)
 	var textBox = document.querySelector("input[name='" + "hex-size" + "']");
-	var delta = 0;
+	var changeDirection = 0;
 	if(event.deltaY > 0){ // Scroll down == zoom out
-		delta = -1;
+		changeDirection = -1;
 	}
 	if(event.deltaY < 0){ // Scroll up == zoom in
-		delta = 1;
+		changeDirection = 1;
 	}
-	textBox.value = parseFloat(textBox.value) + delta;
+	var changeAmount = 0;
+	if(!event.shiftKey){
+		changeAmount = Math.ceil(parseInt(textBox.value) / 10.0);
+		if(changeAmount < 1){changeAmount=1;}
+	}
+	textBox.value = parseInt(textBox.value) + changeAmount*changeDirection;
 	textBox.dispatchEvent(new Event('change'));
 }
 
