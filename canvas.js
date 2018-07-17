@@ -191,6 +191,8 @@ MouseController.prototype.wheel = function (event) {
 	if(!event.shiftKey){
 		changeAmount = Math.ceil(parseInt(textBox.value) / 10.0);
 		if(changeAmount < 1){changeAmount=1;}
+	}else{
+		changeAmount=1;
 	}
 	textBox.value = parseInt(textBox.value) + changeAmount*changeDirection;
 	textBox.dispatchEvent(new Event('change'));
