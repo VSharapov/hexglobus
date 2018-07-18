@@ -81,8 +81,13 @@ function makeSettingsInterface(defaultSettings) {
 		if(defaultSettings[i].name != ""){
 			htmlText += 'name="' + defaultSettings[i].name + '" ';
 		}
+		var initialValue = findGetParameter(defaultSettings[i].name);
+		if(initialValue != null && defaultSettings[i].inputType == "checkbox"){
+			htmlText += "checked "
+		}
+		if(initialValue == null){initialValue = defaultSettings[i].value;}
 		if(defaultSettings[i].value != ""){
-			htmlText += 'value="' + defaultSettings[i].value + '" ';
+			htmlText += 'value="' + initialValue + '" ';
 		}
 		if(defaultSettings[i].size != ""){
 			htmlText += 'size=' + defaultSettings[i].size + ' ';
