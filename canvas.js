@@ -158,7 +158,6 @@ function drawScene(sceneSettings, hexagons) {
 }
 
 function sceneVisibility(canvas, hexMajorDiameter, hexMinorDiameter, scale, offsetX, offsetY){
-	// Rounding can make blank areas on the edges when the division is close, but it's not too bad
 	var visibility = new Object();
 	visibility.firstColumn = -Math.ceil(
 		(canvas.width-hexMajorDiameter/2)/(3*(hexMajorDiameter/2))
@@ -239,7 +238,7 @@ function main() {
 		initSize();
 		sceneSettings.hexMinorDiameter = loadSetting('hex-size');
 		sceneSettings.hexMajorDiameter = sceneSettings.hexMinorDiameter / Math.cos(Math.PI / 6);
-		sceneSettings.columnSpacing = sceneSettings.hexMajorDiameter/2 + (sceneSettings.hexMinorDiameter/4);
+		sceneSettings.columnSpacing = sceneSettings.hexMajorDiameter * 3 / 4;
 		sceneSettings.rowSpacing = sceneSettings.hexMinorDiameter;
 		hexagonSettings.rngSettings.minimumIterations = loadSetting('random-iterations');
 		sceneSettings.transparency = loadSetting('transparency');
