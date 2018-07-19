@@ -21,19 +21,28 @@
 				padding-left: 2em;
 			}
 		</style>
+		<script src="color.js"></script>
+		<script src="settings.js"></script>
+		<script src="controls.js"></script>
 		<script src="getParameters.js"></script>
 		<script src="padZero.js"></script>
 		<script src="hexagon.js"></script>
 		<script src="prng.js"></script>
 		<script src="stringHashCode.js"></script>
 		<script src="canvas.js"></script>
-		<!-- <script src="reload.js"></script> -->
+		<script src="main.js"></script>
 	</head>
 	<body>
 		<section><canvas></canvas></section>
 		<section style="overflow-y:scroll; height:90%" id="settings">
 			<h3 style="float:right;"> Status: <input type="text" width="10" id="status" /> </h3>
 			<h1> Settings </h1>
+		</section>
+		<hr style="margin-top:1rem;" />
+		<section>
+			<h1>Controls:</h1>
+			<p>Movement: <img src="navigationKeys.svg" /><br />
+			Zoom: Mouse scrollwheel</p>
 		</section>
 		<hr style="margin-top:1rem;" />
 		<section>

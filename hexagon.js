@@ -1,21 +1,3 @@
-function getIntColor(num) {
-	var moddedNumber = num % 0x1000000; // Only 6 hex digits needed
-	var flooredNumber = Math.floor(moddedNumber); // Just in case?
-	return "#" + padZero(moddedNumber.toString(16), 6);
-}
-
-function generateDeterministicColor(constantProperties, rngSettings) {
-	var scale = constantProperties[0];
-	var seedString = JSON.stringify(constantProperties);
-	var tempRNG = new Random(seedString.hashCode());
-	// The prng should make different colors based on scale
-	var randomIterations = rngSettings.minimumIterations + Math.abs(scale*2-(scale<0 ? 1 : 0));
-	var randomNumber;
-	for(var i = 0; i < randomIterations; i++){randomNumber = tempRNG.next();};
-	var color = getIntColor(randomNumber);
-	return color;
-}
-
 function Hexagon(
 	allHexagonSettings,
 	scale=0,
