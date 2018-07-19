@@ -44,17 +44,6 @@ function invertColor(hex, bw) {
     return "#" + padZero(r) + padZero(g) + padZero(b);
 }
 
-function hexCoordsToCanvasCoords(screenX, screenY, settings) {
-	var x = screenX * settings.columnSpacing;
-	var y = screenY * settings.rowSpacing;
-	if(screenX % 2){
-		// even columns are "normal", odd columns are offset upwards
-	}else{
-		y += settings.rowSpacing / 2;
-	}
-	return [x + settings.canvas.width/2, y + settings.canvas.height/2];
-}
-
 
 function Setting(
 	displayName="Unnamed setting",
@@ -114,6 +103,19 @@ function loadSetting(name){
 	}
 }
 
+function hexCoordsToCanvasCoords(screenX, screenY, evenHexColumn, settings) {
+	var x = screenX * settings.columnSpacing;
+	var y = screenY * settings.rowSpacing;
+	if(screenX % 2 == 0){
+		// even screen-columns are "normal"
+	}else{
+		// odd screen-columns are offset in the Y-dimension
+		var offsetDirection = evenHexColumn ? 1 : -1;
+		y += (settings.rowSpacing / 2) * offsetDirection;
+	}
+	return {x: x + settings.canvas.width/2, y: y + settings.canvas.height/2};
+}
+
 function drawHexagon(c, centerX, centerY, d, hexagon) {
 	r = d/2;
 	R = r / Math.cos(Math.PI / 6);
@@ -137,23 +139,22 @@ function drawHexagon(c, centerX, centerY, d, hexagon) {
 
 function drawScene(sceneSettings, hexagons) {
 	sceneSettings.canvasContext.globalAlpha = 1 - 0.5 * sceneSettings.transparency;
-	for(var i = sceneSettings.visibility.firstColumn; i <= sceneSettings.visibility.finalColumn; i++){
-		for(var j = sceneSettings.visibility.firstRow; j <= sceneSettings.visibility.finalRow; j++){
-			var x = i + sceneSettings.hexOffsetX;
-			// If the screen is centered on an odd hex-column, then even screen-columns
-			// will still be shifted one half-hex up, even though they should get
-			// shifted down, and an easy fix for this is to shift them.
-			var y = j + sceneSettings.hexOffsetY + (sceneSettings.hexOffsetX%2 && !(i%2) ? 1 : 0);
-			var screenCoords = hexCoordsToCanvasCoords(i, j, sceneSettings);
-			drawHexagon(
-				sceneSettings.canvasContext,
-				screenCoords[0],
-				screenCoords[1],
-				sceneSettings.hexMinorDiameter,
-				hexagons.getHex(sceneSettings.scale, x, y)
-			);
-		}
-	}
+	sceneSettings.visibility.list.forEach(function(coordinates){
+		var hexagon = hexagons.getHex(sceneSettings.scale, coordinates.x, coordinates.y)
+		var screenCoords = hexCoordsToCanvasCoords(
+			hexagon.x - sceneSettings.hexOffsetX, 
+			hexagon.y - sceneSettings.hexOffsetY, 
+			sceneSettings.hexOffsetX%2==0,
+			sceneSettings
+		);
+		drawHexagon(
+			sceneSettings.canvasContext,
+			screenCoords.x,
+			screenCoords.y,
+			sceneSettings.hexMinorDiameter,
+			hexagon
+		);
+	});
 	document.getElementById('status').value='Finished';
 }
 
@@ -163,16 +164,15 @@ function sceneVisibility(canvas, hexMajorDiameter, hexMinorDiameter, scale, offs
 		(canvas.width-hexMajorDiameter/2)/(3*(hexMajorDiameter/2))
 	);
 	visibility.finalColumn = -visibility.firstColumn;
-	visibility.firstRow = -Math.ceil(canvas.height / (2*hexMinorDiameter));
-	visibility.finalRow = -visibility.firstRow;
+	var hexHeightsFloor = Math.floor(canvas.height / hexMinorDiameter);
+	var extraRows = 1 * hexHeightsFloor%2==0;
+	visibility.firstRow = 0-hexHeightsFloor - (offsetX%2==0) * extraRows;
+	visibility.finalRow = 0+hexHeightsFloor + (offsetX%2!=0) * extraRows;
 	visibility.list = [];
 	for(var i = visibility.firstColumn; i <= visibility.finalColumn; i++){
 		for(var j = visibility.firstRow; j <= visibility.finalRow; j++){
 			var x = i + offsetX;
-			// If the screen is centered on an odd hex-column, then even screen-columns
-			// will still be shifted one half-hex up, even though they should get
-			// shifted down, and an easy fix for this is to shift them.
-			var y = j + offsetY + (offsetX%2 && !(i%2) ? 1 : 0);
+			var y = j + offsetY;
 			visibility.list.push({scale:scale, x:x, y:y});
 		}
 	}
