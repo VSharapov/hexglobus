@@ -32,7 +32,7 @@ function makeSettingsInterface(defaultSettings) {
 			htmlText += 'value="' + initialValue + '" ';
 		}
 		if(defaultSettings[i].size != ""){
-			htmlText += 'size=' + defaultSettings[i].size + ' ';
+			htmlText += 'style=\"width:' + defaultSettings[i].size + 'em\" ';
 		}
 		htmlText += '/>';
 		htmlText += defaultSettings[i].suffix + '<br />\n';
