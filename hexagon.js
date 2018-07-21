@@ -33,14 +33,20 @@ Hexagons.prototype.getHex = function (scale, x, y) {
 
 Hexagons.prototype.generateVisible = function (visibility, hexagonSettings) {
 	for (var i = 0; i < visibility.list.length; i++) {
-		this.list.push(new Hexagon(
-			hexagonSettings,
+		if(this.getHex(
 			visibility.list[i].scale,
 			visibility.list[i].x,
-			visibility.list[i].y,
-			"",
-			"" + visibility.list[i].x + "," + visibility.list[i].y
-		));
+			visibility.list[i].y
+		) == undefined){
+			this.list.push(new Hexagon(
+				hexagonSettings,
+				visibility.list[i].scale,
+				visibility.list[i].x,
+				visibility.list[i].y,
+				"",
+				"" + visibility.list[i].x + "," + visibility.list[i].y
+			));
+		}
 	}
 }
 
