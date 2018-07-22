@@ -1,3 +1,16 @@
+function changeHexSize(direction, fine=false){
+	var textBox = document.querySelector("input[name='" + "hex-size" + "']");
+	var changeAmount = 0;
+	if(!fine){
+		changeAmount = Math.ceil(parseInt(textBox.value) / 10.0);
+		if(changeAmount < 1){changeAmount=1;}
+	}else{
+		changeAmount=1;
+	}
+	textBox.value = parseInt(textBox.value) + changeAmount*direction;
+	textBox.dispatchEvent(new Event('change'));
+}
+
 function MouseController(){
 }
 
@@ -10,15 +23,7 @@ MouseController.prototype.wheel = function (event) {
 	if(event.deltaY < 0){ // Scroll up == zoom in
 		changeDirection = 1;
 	}
-	var changeAmount = 0;
-	if(!event.shiftKey){
-		changeAmount = Math.ceil(parseInt(textBox.value) / 10.0);
-		if(changeAmount < 1){changeAmount=1;}
-	}else{
-		changeAmount=1;
-	}
-	textBox.value = parseInt(textBox.value) + changeAmount*changeDirection;
-	textBox.dispatchEvent(new Event('change'));
+	changeHexSize(changeDirection, event.shiftKey);
 }
 
 function KeyboardController(){
@@ -30,6 +35,12 @@ KeyboardController.prototype.keyDown = function (event) {
 	var xChange = 0;
 	var yChange = 0;
 	switch(event.code){
+		case "Equal":
+			changeHexSize(1, event.shiftKey);
+			break;
+		case "Minus":
+			changeHexSize(-1, event.shiftKey);
+			break;
 		case "KeyW":
 			yChange--;
 			break;
