@@ -11,7 +11,7 @@ function main() {
 
 	var defaultSettings = [
 		new Setting("Hex size (minor diameter)", "number", "hex-size", "60", "4", "px"),
-		new Setting("Random iterations", "number", "random-iterations", "3", "4", " (The prng isn't always random enough, so the lazy fix is to change iterations)"),
+		new Setting("Random iterations", "number", "random-iterations", "1", "4", " Change to get a different set of random colors"),
 		new Setting("Transparency", "checkbox", "transparency", "", "", " Makes everything 50% opaque"),
 		new Setting("View coordinate X", "number", "view-coordinate-x", "0", "4"),
 		new Setting("View coordinate Y", "number", "view-coordinate-y", "0", "4")
