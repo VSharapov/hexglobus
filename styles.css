@@ -1,0 +1,52 @@
+* {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	padding: 0;
+	margin: 0;
+}
+
+body {
+	overflow-x: hidden;
+}
+
+.Container {
+	display: flex;
+	height: 100vh;
+	width: 100%;
+	position: relative;
+	will-change: overflow;
+}
+
+.Left,
+.Right {
+	overflow: auto;
+	width: 50%;
+	-webkit-overflow-scrolling: touch;
+	-ms-overflow-style: none;
+}
+
+.Left::-webkit-scrollbar {
+	display: none;
+}
+
+.Right {
+	overflow-wrap: break-word;
+	height: auto;
+	padding: 1em;
+}
+
+canvas {
+	background: WhiteSmoke;
+}
+
+.issue {
+	margin: 2px;
+}
+
+h3.issue {
+	padding-left: 2em;
+}
+

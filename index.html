@@ -2,25 +2,7 @@
 <html lang="en">
 	<head>
 		<title>Hexglobus</title>
-		<style type="text/css">
-			canvas {
-				background: WhiteSmoke;
-			}
-			body {
-				margin:0;
-				overflow:hidden;
-			}
-			section {
-				float: left;
-				width: 50%;
-			}
-			.issue {
-				margin: 2px;
-			}
-			h3.issue {
-				padding-left: 2em;
-			}
-		</style>
+		<link rel="stylesheet" href="styles.css">
 		<script src="color.js"></script>
 		<script src="settings.js"></script>
 		<script src="controls.js"></script>
@@ -33,25 +15,29 @@
 		<script src="main.js"></script>
 	</head>
 	<body>
-		<section><canvas></canvas></section>
-		<section style="overflow-y:scroll; height:90%" id="settings">
-			<h3 style="float:right;"> Status: <input type="text" size="8" id="status" disabled="disabled" /> </h3>
-			<h1> Settings </h1>
-		</section>
-		<hr style="margin-top:1rem;" />
-		<section>
-			<h1>Controls:</h1>
-			<p>Movement: <img src="navigationKeys.svg" /><br />
-			Zoom: Mouse scrollwheel</p>
-		</section>
-		<hr style="margin-top:1rem;" />
-		<section>
-			<a href="https://github.com/VSharapov/hexglobus/issues">
-				<h1> Known issues </h1>
-			</a>
-			<div id="issues"></div>
-			<script src="githubIssues.js"></script>
-		</section>
+		<div class="Container">
+			<div class="Left"><canvas></canvas></div>
+			<div class="Right">
+				<section id="settings">
+					<h3 style="float:right;"> Status: <input type="text" size="8" id="status" disabled="disabled" /> </h3>
+					<h1>Settings</h1>
+				</section>
+				<hr style="margin-top:1rem;" />
+				<section>
+					<h1>Controls:</h1>
+					<p>Movement: <img src="navigationKeys.svg" /><br />
+					Zoom: Mouse scrollwheel</p>
+				</section>
+				<hr style="margin-top:1rem;" />
+				<section>
+					<a href="https://github.com/VSharapov/hexglobus/issues">
+						<h1> Known issues </h1>
+					</a>
+					<div id="issues"></div>
+					<script src="githubIssues.js"></script>
+				</section>
+			</div>
+		</div>
 		<script>
 			window.onload = main;
 		</script>
