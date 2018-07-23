@@ -1,5 +1,5 @@
 function changeHexSize(direction, fine=false){
-	var textBox = document.querySelector("input[name='" + "hex-size" + "']");
+	var textBox = document.getElementById("hex-size");
 	var changeAmount = 0;
 	if(!fine){
 		changeAmount = Math.ceil(parseInt(textBox.value) / 10.0);
@@ -15,7 +15,7 @@ function MouseController(){
 }
 
 MouseController.prototype.wheel = function (event) {
-	var textBox = document.querySelector("input[name='" + "hex-size" + "']");
+	var textBox = document.getElementById("hex-size");
 	var changeDirection = 0;
 	if(event.deltaY > 0){ // Scroll down == zoom out
 		changeDirection = -1;
@@ -31,8 +31,8 @@ function KeyboardController(){
 
 KeyboardController.prototype.keyDown = function (event) {
 	if(document.activeElement.tagName == "INPUT"){return;}
-	var xCoord = document.querySelector("input[name='" + "view-coordinate-x" + "']");
-	var yCoord = document.querySelector("input[name='" + "view-coordinate-y" + "']");
+	var xCoord = document.getElementById("view-coordinate-x");
+	var yCoord = document.getElementById("view-coordinate-y");
 	var xChange = 0;
 	var yChange = 0;
 	switch(event.code){

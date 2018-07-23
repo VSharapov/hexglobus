@@ -68,7 +68,7 @@ function main() {
 	
 	window.addEventListener('resize', redraw);
 	for(var i = 0; i < defaultSettings.length; i++){
-		document.getElementsByName(defaultSettings[i].name)[0].addEventListener('change', redraw);
+		document.getElementById(defaultSettings[i].id).addEventListener('change', redraw);
 	}
 }
 
