@@ -30,6 +30,7 @@ function KeyboardController(){
 }
 
 KeyboardController.prototype.keyDown = function (event) {
+	if(document.activeElement.tagName == "INPUT"){return;}
 	var xCoord = document.querySelector("input[name='" + "view-coordinate-x" + "']");
 	var yCoord = document.querySelector("input[name='" + "view-coordinate-y" + "']");
 	var xChange = 0;
