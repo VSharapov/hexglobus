@@ -11,10 +11,9 @@ function hexCoordsToCanvasCoords(screenX, screenY, evenHexColumn, settings) {
 	return {x: x + settings.canvas.width/2, y: y + settings.canvas.height/2};
 }
 
-function drawHexagon(c, centerX, centerY, d, hexagon) {
+function drawSimpleHexagon(c, centerX, centerY, d, color, holeFactor=0.0) {
 	r = d/2;
 	R = r / Math.cos(Math.PI / 6);
-	c.fillStyle = hexagon.fillColor;
 	c.beginPath();
 	c.moveTo(centerX + R, centerY);
 	c.lineTo(centerX + R/2, centerY + r);
@@ -23,7 +22,23 @@ function drawHexagon(c, centerX, centerY, d, hexagon) {
 	c.lineTo(centerX - R/2, centerY - r);
 	c.lineTo(centerX + R/2, centerY - r);
 	c.closePath();
+	if(holeFactor > 0){
+		hole_r = r * holeFactor;
+		hole_R = R * holeFactor;
+		c.moveTo(centerX + hole_R, centerY);
+		c.lineTo(centerX + hole_R/2, centerY - hole_r);
+		c.lineTo(centerX - hole_R/2, centerY - hole_r);
+		c.lineTo(centerX - hole_R, centerY);
+		c.lineTo(centerX - hole_R/2, centerY + hole_r);
+		c.lineTo(centerX + hole_R/2, centerY + hole_r);
+		c.closePath();
+	}
+	c.fillStyle = color;
 	c.fill();
+}
+
+function drawHexagon(c, centerX, centerY, d, hexagon, highl) {
+	drawSimpleHexagon(c, centerX, centerY, d, hexagon.fillColor);
 	fontFactor = 4; // This is about as big as you can go for printing 3 digit coordinates
 	c.font = Math.floor(d/fontFactor) + "px Arial";
 	c.fillStyle = invertColor(c.fillStyle, 1);
@@ -42,6 +57,9 @@ function drawScene(sceneSettings, hexagons) {
 			sceneSettings.hexOffsetX%2==0,
 			sceneSettings
 		);
+		var centralHex = (
+			screenCoords.x == sceneSettings.canvas.width/2 &&
+			screenCoords.y == sceneSettings.canvas.height/2);
 		drawHexagon(
 			sceneSettings.canvasContext,
 			screenCoords.x,
@@ -49,6 +67,24 @@ function drawScene(sceneSettings, hexagons) {
 			sceneSettings.hexMinorDiameter,
 			hexagon
 		);
+		if(centralHex){
+			drawSimpleHexagon(
+				sceneSettings.canvasContext,
+				screenCoords.x,
+				screenCoords.y,
+				sceneSettings.hexMinorDiameter,
+				"#000000",
+				0.85
+			);
+			drawSimpleHexagon(
+				sceneSettings.canvasContext,
+				screenCoords.x,
+				screenCoords.y,
+				sceneSettings.hexMinorDiameter * 0.95,
+				"#FFFFFF",
+				0.95
+			);
+		}
 	});
 	document.getElementById('status').value='Finished';
 }
