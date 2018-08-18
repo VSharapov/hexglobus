@@ -59,6 +59,9 @@ function main() {
 			sceneSettings.hexOffsetY
 		);
 		hexagons.generateVisible(sceneSettings.visibility, hexagonSettings);
+		// console.log(JSON.stringify(hexagons).length);
+		// console.log(LZString.compressToBase64(JSON.stringify(hexagons)).length);
+		// console.log(LZString.compressToBase64(JSON.stringify(hexagons));
 		document.getElementById('status').value='Rendering...';
 		setTimeout(function(){
 			drawScene(sceneSettings, hexagons);
