@@ -13,6 +13,10 @@ body {
 	font-family: Sans-Serif;
 }
 
+hr {
+	margin-top:1rem;
+}
+
 .Container {
 	display: flex;
 	height: 100vh;
