@@ -1,14 +1,12 @@
 function Setting(
-	displayName="Unnamed setting",
+	displayNameAndId="Unnamed setting",
 	inputType="text",
-	id="",
 	value="",
 	size="",
 	suffix=""
 ){
-	this.displayName=displayName,
+	this.displayNameAndId=displayNameAndId,
 	this.inputType=inputType,
-	this.id=id,
 	this.value=value,
 	this.size=size,
 	this.suffix=suffix
@@ -16,14 +14,14 @@ function Setting(
 
 function makeSettingsInterface(defaultSettings) {
 	for(var i = 0; i < defaultSettings.length; i++){
-		var htmlText = "<label for=\"" + defaultSettings[i].id + "\">" + 
-			defaultSettings[i].displayName + 
+		var htmlText = "<label for=\"" + defaultSettings[i].displayNameAndId + "\">" + 
+			defaultSettings[i].displayNameAndId + 
 			': </label><input type="' + defaultSettings[i].inputType + '" ';
 		;
-		if(defaultSettings[i].id != ""){
-			htmlText += 'id="' + defaultSettings[i].id + '" ';
+		if(defaultSettings[i].displayNameAndId != ""){
+			htmlText += 'id="' + defaultSettings[i].displayNameAndId + '" ';
 		}
-		var initialValue = findGetParameter(defaultSettings[i].id);
+		var initialValue = findGetParameter(defaultSettings[i].displayNameAndId);
 		if(initialValue != null && defaultSettings[i].inputType == "checkbox"){
 			htmlText += "checked ";
 		}
@@ -40,8 +38,8 @@ function makeSettingsInterface(defaultSettings) {
 	}
 }
 
-function loadSetting(id){
-	var field = document.getElementById(id);
+function loadSetting(displayNameAndId){
+	var field = document.getElementById(displayNameAndId);
 	if(field.type == "number"){
 		return parseFloat(field.value);
 	}

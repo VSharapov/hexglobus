@@ -10,11 +10,39 @@ function main() {
 	var c = canvas.getContext('2d');
 
 	var defaultSettings = [
-		new Setting("Hex size (minor diameter)", "number", "hex-size", "60", "4", "px"),
-		new Setting("Random iterations", "number", "random-iterations", "1", "4", " Change to get a different set of random colors"),
-		new Setting("Transparency", "checkbox", "transparency", "", "", " Makes everything 50% opaque"),
-		new Setting("View coordinate X", "number", "view-coordinate-x", "0", "4"),
-		new Setting("View coordinate Y", "number", "view-coordinate-y", "0", "4")
+		new Setting(
+			"Hex size", 
+			"number", 
+			"60", 
+			"4", 
+			"px (minor diameter)"
+		),
+		new Setting(
+			"Random iterations", 
+			"number", 
+			"1", 
+			"4", 
+			" Change to get a different set of random colors"
+		),
+		new Setting(
+			"Transparency", 
+			"checkbox", 
+			"", 
+			"", 
+			" Makes everything 50% opaque"
+		),
+		new Setting(
+			"View coordinate X", 
+			"number", 
+			"0", 
+			"4"
+		),
+		new Setting(
+			"View coordinate Y", 
+			"number", 
+			"0", 
+			"4"
+		)
 	]
 	makeSettingsInterface(defaultSettings);
 
@@ -38,14 +66,23 @@ function main() {
 
 	function redraw() {
 		initSize();
-		sceneSettings.hexMinorDiameter = loadSetting('hex-size');
-		sceneSettings.hexMajorDiameter = sceneSettings.hexMinorDiameter / Math.cos(Math.PI / 6);
-		sceneSettings.columnSpacing = sceneSettings.hexMajorDiameter * 3 / 4;
-		sceneSettings.rowSpacing = sceneSettings.hexMinorDiameter;
-		hexagonSettings.rngSettings.minimumIterations = loadSetting('random-iterations');
-		sceneSettings.transparency = loadSetting('transparency');
-		sceneSettings.hexOffsetX = loadSetting('view-coordinate-x');
-		sceneSettings.hexOffsetY = loadSetting('view-coordinate-y');
+
+		sceneSettings.hexMinorDiameter = 
+			loadSetting('Hex size');
+		sceneSettings.hexMajorDiameter = 
+			sceneSettings.hexMinorDiameter / Math.cos(Math.PI / 6);
+		sceneSettings.columnSpacing = 
+			sceneSettings.hexMajorDiameter * 3 / 4;
+		sceneSettings.rowSpacing = 
+			sceneSettings.hexMinorDiameter;
+		sceneSettings.transparency = 
+			loadSetting('Transparency');
+		sceneSettings.hexOffsetX = 
+			loadSetting('View coordinate X');
+		sceneSettings.hexOffsetY = 
+			loadSetting('View coordinate Y');
+		hexagonSettings.rngSettings.minimumIterations = 
+			loadSetting('Random iterations');
 		// TODO: scale zero should be variable
 		sceneSettings.scale = 0;
 		sceneSettings.canvas = canvas;
@@ -71,7 +108,7 @@ function main() {
 	
 	window.addEventListener('resize', redraw);
 	for(var i = 0; i < defaultSettings.length; i++){
-		document.getElementById(defaultSettings[i].id).addEventListener('change', redraw);
+		document.getElementById(defaultSettings[i].displayNameAndId).addEventListener('change', redraw);
 	}
 }
 

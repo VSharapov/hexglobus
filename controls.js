@@ -1,5 +1,5 @@
 function changeHexSize(direction, fine=false){
-	var textBox = document.getElementById("hex-size");
+	var textBox = document.getElementById("Hex size");
 	var changeAmount = 0;
 	if(!fine){
 		changeAmount = Math.ceil(parseInt(textBox.value) / 10.0);
@@ -31,8 +31,8 @@ function KeyboardController(){
 
 KeyboardController.prototype.keyDown = function (event) {
 	if(document.activeElement.tagName == "INPUT"){return;}
-	var xCoord = document.getElementById("view-coordinate-x");
-	var yCoord = document.getElementById("view-coordinate-y");
+	var xCoord = document.getElementById("View coordinate X");
+	var yCoord = document.getElementById("View coordinate Y");
 	var xChange = 0;
 	var yChange = 0;
 	switch(event.code){
