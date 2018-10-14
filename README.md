@@ -9,9 +9,9 @@ Hexes at (0, 0) are concentric at all scales, scale 0 being the smallest, 1 bein
 # Goals
 v0.1 is an HTML5 webpage that can display a small hexmap, with the following interactions:
 
-- Generate a random hex property (fill color)
-- Store & retrieve generated hexes as a base64 string
-- See the coordinates and scale of the hex in the center of view
-- Set coordinates and scale to go to a different hex
-- Toggle the grid for multiple scales, stroke width, color, transparency
-- Underlay an image that is locked to specific hex coordinates and moves/scales with the grid
+- ☑ Generate a random hex property (fill color)
+- ☐ Store & retrieve generated hexes as a base64 string
+- ☑ See the coordinates of the hex in the center of view
+- ☑ Set coordinates and scale to go to a different hex
+- ☐ Toggle the grid for multiple scales, stroke width, color, transparency
+- ☐ Underlay an image that is locked to specific hex coordinates and moves/scales with the grid
