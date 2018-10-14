@@ -96,9 +96,9 @@ function sceneVisibility(canvas, hexMajorDiameter, hexMinorDiameter, scale, offs
 	);
 	visibility.finalColumn = -visibility.firstColumn;
 	var hexHeightsFloor = Math.floor(canvas.height / hexMinorDiameter);
-	var extraRows = 1 * hexHeightsFloor%2==0;
-	visibility.firstRow = 0-hexHeightsFloor - (offsetX%2==0) * extraRows;
-	visibility.finalRow = 0+hexHeightsFloor + (offsetX%2!=0) * extraRows;
+	var extraRows = 1 * Number(hexHeightsFloor%2==0);
+	visibility.firstRow = 0-Math.ceil(hexHeightsFloor/2) - (offsetX%2==0) * extraRows;
+	visibility.finalRow = 0+Math.ceil(hexHeightsFloor/2) + (offsetX%2!=0) * extraRows;
 	visibility.list = [];
 	for(var i = visibility.firstColumn; i <= visibility.finalColumn; i++){
 		for(var j = visibility.firstRow; j <= visibility.finalRow; j++){
