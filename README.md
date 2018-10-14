@@ -1,7 +1,7 @@
 # hexglobus
 An experiment in hexmapping
 
-Hexes at (0, 0) are concentric at all scales, scale 0 being the smallest, 1 being twice as long, and so on. See [the example diagram](hex-scale.svg), [this blog post](https://dqmusings.blogspot.com/2017/03/mapping-with-master-hexes.html) refers to sese as "Category 1". 
+Hexes at (0, 0) are concentric at all scales, scale 0 being the smallest, 1 being twice as long, and so on. See [the example diagram](hex-scale.svg), [this blog post](https://dqmusings.blogspot.com/2017/03/mapping-with-master-hexes.html) refers to these as "Category 1". 
 
 # Demo
 [https://vsharapov.github.io/hexglobus/](https://vsharapov.github.io/hexglobus/)
