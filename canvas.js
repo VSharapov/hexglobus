@@ -84,14 +84,19 @@ function drawScene(sceneSettings, hexagons) {
 
 function sceneVisibility(canvas, hexMajorDiameter, hexMinorDiameter, scale, offsetX, offsetY){
 	var visibility = new Object();
+	// First we delimit a rhombus which encapsulates the area on screen...
 	visibility.firstColumn = -Math.ceil(
 		(canvas.width-hexMajorDiameter/2)/(3*(hexMajorDiameter/2))
 	);
 	visibility.finalColumn = -visibility.firstColumn;
 	var hexHeightsFloor = Math.floor(canvas.height / hexMinorDiameter);
 	var extraRows = 1 * Number(hexHeightsFloor%2==0);
-	visibility.firstRow = 0-Math.ceil(hexHeightsFloor/2) - (offsetX%2==0) * extraRows;
-	visibility.finalRow = 0+Math.ceil(hexHeightsFloor/2) + (offsetX%2!=0) * extraRows;
+	firstRowAtZero = 0-Math.ceil(hexHeightsFloor/2);
+	finalRowAtZero = 0+Math.ceil(hexHeightsFloor/2);
+	visibility.firstRow = firstRowAtZero-Math.ceil(
+		visibility.finalColumn / 2
+	);
+	visibility.finalRow = -visibility.firstRow;
 	visibility.list = [];
 	for(var i = visibility.firstColumn; i <= visibility.finalColumn; i++){
 		for(var j = visibility.firstRow; j <= visibility.finalRow; j++){
