@@ -1,13 +1,6 @@
 function hexCoordsToCanvasCoords(screenX, screenY, evenHexColumn, settings) {
 	var x = screenX * settings.columnSpacing;
-	var y = screenY * settings.rowSpacing;
-	if(screenX % 2 == 0){
-		// even screen-columns are "normal"
-	}else{
-		// odd screen-columns are offset in the Y-dimension
-		var offsetDirection = evenHexColumn ? 1 : -1;
-		y += (settings.rowSpacing / 2) * offsetDirection;
-	}
+	var y = screenY * settings.rowSpacing + screenX * settings.rowSpacing * 0.5;
 	return {x: x + settings.canvas.width/2, y: y + settings.canvas.height/2};
 }
 
