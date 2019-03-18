@@ -14,8 +14,8 @@ function Setting(
 
 function makeSettingsInterface(defaultSettings) {
 	for(var i = 0; i < defaultSettings.length; i++){
-		var htmlText = "<label for=\"" + defaultSettings[i].displayNameAndId + "\">" + 
-			defaultSettings[i].displayNameAndId + 
+		var htmlText = "<label for=\"" + defaultSettings[i].displayNameAndId + 
+			"\">" + defaultSettings[i].displayNameAndId + 
 			': </label><input type="' + defaultSettings[i].inputType + '" ';
 		;
 		if(defaultSettings[i].displayNameAndId != ""){
@@ -34,9 +34,52 @@ function makeSettingsInterface(defaultSettings) {
 		}
 		htmlText += '/>';
 		htmlText += defaultSettings[i].suffix + '<br />\n';
+		if(defaultSettings[i].inputType == "number"){
+			htmlText += '<input class="LogSlider" type="range" min="-11" max="11" id="' + 
+				defaultSettings[i].displayNameAndId + 
+				'Logslider" onchange="settingsLogslider(\'' + 
+				defaultSettings[i].displayNameAndId + 
+				'\')" oninput="document.getElementById(\'' + 
+				defaultSettings[i].displayNameAndId + 
+				'LogsliderMoveAmount\').value=signedString(' +  
+				'logSliderTransform(document.getElementById(\'' + 
+				defaultSettings[i].displayNameAndId + 
+				'Logslider\').value))"><output id="' + 
+				defaultSettings[i].displayNameAndId + 
+				'LogsliderMoveAmount" for="' + 
+				defaultSettings[i].displayNameAndId + 
+				'">0</output><br />';
+		}
 		document.getElementById('settings').innerHTML += htmlText;
 	}
 }
+
+function signedString(number) {
+	sign = '';
+	if(number > 0){sign = '+';}
+	return sign + number;
+}
+
+function settingsLogslider(inputID, amount) {
+	amount = document.getElementById(inputID + 'Logslider').value;
+	document.getElementById(inputID).value = 
+		parseInt(document.getElementById(inputID).value) + 
+		logSliderTransform(amount);
+	document.getElementById(inputID + 'Logslider').value = 0;
+	document.getElementById(inputID + 'LogsliderMoveAmount').value = 0;
+	document.getElementById(inputID).dispatchEvent(new Event('change'));
+}
+
+function logSliderTransform(x) {
+	// Turns   -11  -10 ... -3 -2 -1 0 1 ... 11
+	// Into  -1024 -512 ... -4 -2 -1 0 1 ... 1024
+	if(x==0){
+		return x;
+	}else{
+		return Math.sign(x)*Math.pow(2, Math.abs(x)-1);
+	}
+}
+
 
 function loadSetting(displayNameAndId){
 	var field = document.getElementById(displayNameAndId);
