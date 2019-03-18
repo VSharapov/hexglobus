@@ -1,13 +1,6 @@
 function hexCoordsToCanvasCoords(screenX, screenY, evenHexColumn, settings) {
 	var x = screenX * settings.columnSpacing;
-	var y = screenY * settings.rowSpacing;
-	if(screenX % 2 == 0){
-		// even screen-columns are "normal"
-	}else{
-		// odd screen-columns are offset in the Y-dimension
-		var offsetDirection = evenHexColumn ? 1 : -1;
-		y += (settings.rowSpacing / 2) * offsetDirection;
-	}
+	var y = screenY * settings.rowSpacing + screenX * settings.rowSpacing * 0.5;
 	return {x: x + settings.canvas.width/2, y: y + settings.canvas.height/2};
 }
 
@@ -86,25 +79,40 @@ function drawScene(sceneSettings, hexagons) {
 			);
 		}
 	});
+  // // Draws 1/4 and 3/4 lines for height and width. If you multiply all canvas width/height references by 0.5 this is really useful
+  // // for debugging visibility calculations... which are all set now... except for one corner case.
+  // sceneSettings.canvasContext.strokeRect(0, sceneSettings.canvas.height/4, sceneSettings.canvas.width, sceneSettings.canvas.height/2);
+  // sceneSettings.canvasContext.strokeRect(sceneSettings.canvas.width/4, 0, sceneSettings.canvas.width/2, sceneSettings.canvas.height);
 	document.getElementById('status').value='Finished';
 }
 
 function sceneVisibility(canvas, hexMajorDiameter, hexMinorDiameter, scale, offsetX, offsetY){
 	var visibility = new Object();
+	// First we delimit a rhombus which encapsulates the area on screen...
 	visibility.firstColumn = -Math.ceil(
 		(canvas.width-hexMajorDiameter/2)/(3*(hexMajorDiameter/2))
-	);
+	); // This is elegant but technically wrong when hexHeightsFloor==0
 	visibility.finalColumn = -visibility.firstColumn;
 	var hexHeightsFloor = Math.floor(canvas.height / hexMinorDiameter);
 	var extraRows = 1 * Number(hexHeightsFloor%2==0);
-	visibility.firstRow = 0-Math.ceil(hexHeightsFloor/2) - (offsetX%2==0) * extraRows;
-	visibility.finalRow = 0+Math.ceil(hexHeightsFloor/2) + (offsetX%2!=0) * extraRows;
+	firstRowAtZero = 0-Math.ceil(hexHeightsFloor/2);
+	finalRowAtZero = 0+Math.ceil(hexHeightsFloor/2);
+	visibility.firstRow = firstRowAtZero-Math.ceil(
+		visibility.finalColumn / 2
+	);
+	visibility.finalRow = -visibility.firstRow;
 	visibility.list = [];
 	for(var i = visibility.firstColumn; i <= visibility.finalColumn; i++){
 		for(var j = visibility.firstRow; j <= visibility.finalRow; j++){
 			var x = i + offsetX;
 			var y = j + offsetY;
-			visibility.list.push({scale:scale, x:x, y:y});
+      // if(!(y+Math.ceil(x/2-(x%2*hexHeightsFloor%2)) < firstRowAtZero)){
+      if(
+        !(y+x/2+(Math.abs(x)%2)*((hexHeightsFloor+1)%2) < firstRowAtZero) &&
+        !(y+x/2-(Math.abs(x)%2)*((hexHeightsFloor+1)%2) > finalRowAtZero)
+      ){
+        visibility.list.push({scale:scale, x:x, y:y});
+      }
 		}
 	}
 	return visibility;

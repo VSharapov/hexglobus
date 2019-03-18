@@ -50,19 +50,17 @@ KeyboardController.prototype.keyDown = function (event) {
 			break;
 		case "KeyA":
 			xChange--;
-			yChange-=(xCoord.value%2==0);
-			break;
-		case "KeyZ":
-			xChange--;
-			yChange+=(xCoord.value%2!=0);
-			break;
-		case "KeyE":
-			xChange++;
-			yChange-=(xCoord.value%2==0);
 			break;
 		case "KeyD":
 			xChange++;
-			yChange+=(xCoord.value%2!=0);
+			break;
+		case "KeyE":
+			xChange++;
+			yChange--;
+			break;
+		case "KeyZ":
+			xChange--;
+			yChange++;
 			break;
 	}
 	xCoord.value = parseInt(xCoord.value) + xChange;
