@@ -38,7 +38,7 @@ function generateDeterministicColor(constantProperties, rngSettings) {
 	var tempRNG = new RNG(seedString);
 	// The prng should make different colors based on scale
 	var randomIterations = rngSettings.minimumIterations + Math.abs(scale*2-(scale<0 ? 1 : 0));
-	var randomNumber;
+	var randomNumber = 0;
 	for(var i = 0; i < randomIterations; i++){
 		randomNumber = ((tempRNG.nextByte() << 16) | (tempRNG.nextByte() << 8) | (tempRNG.nextByte() & 0xFF));
 	}
