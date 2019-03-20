@@ -108,8 +108,8 @@ function sceneVisibility(canvas, hexMajorDiameter, hexMinorDiameter, scale, offs
 			var y = j + offsetY;
       // if(!(y+Math.ceil(x/2-(x%2*hexHeightsFloor%2)) < firstRowAtZero)){
       if(
-        !(y+x/2+(Math.abs(x)%2)*((hexHeightsFloor+1)%2) < firstRowAtZero) &&
-        !(y+x/2-(Math.abs(x)%2)*((hexHeightsFloor+1)%2) > finalRowAtZero)
+        !(j+i/2+(Math.abs(i)%2)*((hexHeightsFloor+1)%2) < firstRowAtZero) &&
+        !(j+i/2-(Math.abs(i)%2)*((hexHeightsFloor+1)%2) > finalRowAtZero)
       ){
         visibility.list.push({scale:scale, x:x, y:y});
       }
