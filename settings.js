@@ -52,6 +52,24 @@ function makeSettingsInterface(defaultSettings) {
 		}
 		document.getElementById('settings').innerHTML += htmlText;
 	}
+	var htmlText = "<input class=\"LogSlider\" type=\"text\" id=\"viewURL\" " + 
+		"value=\"" + document.location + 
+		"\" /><button onclick=\"copyURL()\">&#x1F4CB</button><br />";
+	document.getElementById('settings').innerHTML += htmlText;
+}
+
+function copyURL() {
+	var placeholderText = "Copied to clipboard";
+	var copyText = document.getElementById("viewURL");
+	copyText.select();
+	document.execCommand("copy");
+	var oldText = copyText.value;
+	copyText.value = placeholderText;
+	setTimeout(function() {
+		if(copyText.value == placeholderText){
+			copyText.value = oldText;
+		}
+	}, 1200);
 }
 
 function signedString(number) {
@@ -71,7 +89,7 @@ function settingsLogslider(inputID, amount) {
 }
 
 function logSliderTransform(x) {
-	// Turns   -11  -10 ... -3 -2 -1 0 1 ... 11
+	// Turns	 -11	-10 ... -3 -2 -1 0 1 ... 11
 	// Into  -1024 -512 ... -4 -2 -1 0 1 ... 1024
 	if(x==0){
 		return x;
