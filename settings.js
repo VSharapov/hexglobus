@@ -53,7 +53,7 @@ function makeSettingsInterface(defaultSettings) {
 		document.getElementById('settings').innerHTML += htmlText;
 	}
 	var htmlText = "<input class=\"LogSlider\" type=\"text\" id=\"viewURL\" " + 
-		"value=\"" + document.location + 
+		"disabled=\"disabled\" value=\"" + document.location + 
 		"\" /><button onclick=\"copyURL()\">&#x1F4CB</button><br />";
 	document.getElementById('settings').innerHTML += htmlText;
 }
