@@ -62,7 +62,7 @@ function copyURL() {
 	var placeholderText = "Copied to clipboard";
 	var copyText = document.getElementById("viewURL");
 	copyText.select();
-	document.execCommand("copy");
+	navigator.clipboard.writeText(copyText.value);
 	var oldText = copyText.value;
 	copyText.value = placeholderText;
 	setTimeout(function() {
