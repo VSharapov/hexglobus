@@ -103,6 +103,21 @@ function main() {
 		setTimeout(function(){
 			drawScene(sceneSettings, hexagons);
 		}, 0);
+		function craftURL(d, l) {
+			url = String(l).split('?')[0];
+			url += '?';
+			d.forEach(function(defaultSetting) {
+				var current = loadSetting(defaultSetting.displayNameAndId);
+				if(current != defaultSetting.value){
+					url += defaultSetting.displayNameAndId + '=' + current + '&';
+				}
+			});
+			return url.slice(0, url.length-1);
+		}
+		document.getElementById('viewURL').value = craftURL(
+			defaultSettings, 
+			document.location
+		);
 	}
 	redraw();
 	
