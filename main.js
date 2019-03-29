@@ -109,7 +109,8 @@ function main() {
 			d.forEach(function(defaultSetting) {
 				var current = loadSetting(defaultSetting.displayNameAndId);
 				if(current != defaultSetting.value){
-					url += defaultSetting.displayNameAndId + '=' + current + '&';
+					url += encodeURIComponent(defaultSetting.displayNameAndId) + 
+						'=' + encodeURIComponent(current) + '&';
 				}
 			});
 			return url.slice(0, url.length-1);
