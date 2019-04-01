@@ -11,8 +11,10 @@ var LZString = (function() {
 
 // private property
 var f = String.fromCharCode;
-var keyStrBase64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-var keyStrUriSafe = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$";
+var keyStrBase64 = 
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+var keyStrUriSafe = 
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$";
 var baseReverseDic = {};
 
 function getBaseValue(alphabet, character) {
@@ -28,7 +30,9 @@ function getBaseValue(alphabet, character) {
 var LZString = {
   compressToBase64 : function (input) {
     if (input == null) return "";
-    var res = LZString._compress(input, 6, function(a){return keyStrBase64.charAt(a);});
+    var res = LZString._compress(
+      input, 6, function(a){return keyStrBase64.charAt(a);}
+    );
     switch (res.length % 4) { // To produce valid Base64
     default: // When could this happen ?
     case 0 : return res;
@@ -41,7 +45,13 @@ var LZString = {
   decompressFromBase64 : function (input) {
     if (input == null) return "";
     if (input == "") return null;
-    return LZString._decompress(input.length, 32, function(index) { return getBaseValue(keyStrBase64, input.charAt(index)); });
+    return LZString._decompress(
+      input.length, 
+      32, 
+      function(index) { 
+        return getBaseValue(keyStrBase64, input.charAt(index));
+      }
+    );
   },
 
   compressToUTF16 : function (input) {
@@ -52,7 +62,13 @@ var LZString = {
   decompressFromUTF16: function (compressed) {
     if (compressed == null) return "";
     if (compressed == "") return null;
-    return LZString._decompress(compressed.length, 16384, function(index) { return compressed.charCodeAt(index) - 32; });
+    return LZString._decompress(
+      compressed.length, 
+      16384, 
+      function(index) {
+        return compressed.charCodeAt(index) - 32;
+      }
+    );
   },
 
   //compress into uint8array (UCS-2 big endian format)
@@ -92,7 +108,13 @@ var LZString = {
   //compress into a string that is already URI encoded
   compressToEncodedURIComponent: function (input) {
     if (input == null) return "";
-    return LZString._compress(input, 6, function(a){return keyStrUriSafe.charAt(a);});
+    return LZString._compress(
+      input, 
+      6, 
+      function(a){
+        return keyStrUriSafe.charAt(a);
+      }
+    );
   },
 
   //decompress from an output of compressToEncodedURIComponent
@@ -100,7 +122,13 @@ var LZString = {
     if (input == null) return "";
     if (input == "") return null;
     input = input.replace(/ /g, "+");
-    return LZString._decompress(input.length, 32, function(index) { return getBaseValue(keyStrUriSafe, input.charAt(index)); });
+    return LZString._decompress(
+      input.length, 
+      32, 
+      function(index) { 
+        return getBaseValue(keyStrUriSafe, input.charAt(index));
+      }
+    );
   },
 
   compress: function (uncompressed) {
@@ -114,7 +142,7 @@ var LZString = {
         context_c="",
         context_wc="",
         context_w="",
-        context_enlargeIn= 2, // Compensate for the first entry which should not count
+        context_enlargeIn= 2, // Compensate - first entry should not count
         context_dictSize= 3,
         context_numBits= 2,
         context_data=[],
@@ -133,7 +161,9 @@ var LZString = {
       if (Object.prototype.hasOwnProperty.call(context_dictionary,context_wc)) {
         context_w = context_wc;
       } else {
-        if (Object.prototype.hasOwnProperty.call(context_dictionaryToCreate,context_w)) {
+        if (Object.prototype.hasOwnProperty.call(
+          context_dictionaryToCreate,context_w
+        )) {
           if (context_w.charCodeAt(0)<256) {
             for (i=0 ; i<context_numBits ; i++) {
               context_data_val = (context_data_val << 1);
@@ -218,7 +248,9 @@ var LZString = {
 
     // Output the code for w.
     if (context_w !== "") {
-      if (Object.prototype.hasOwnProperty.call(context_dictionaryToCreate,context_w)) {
+      if (Object.prototype.hasOwnProperty.call(
+        context_dictionaryToCreate,context_w
+      )) {
         if (context_w.charCodeAt(0)<256) {
           for (i=0 ; i<context_numBits ; i++) {
             context_data_val = (context_data_val << 1);
@@ -326,7 +358,13 @@ var LZString = {
   decompress: function (compressed) {
     if (compressed == null) return "";
     if (compressed == "") return null;
-    return LZString._decompress(compressed.length, 32768, function(index) { return compressed.charCodeAt(index); });
+    return LZString._decompress(
+      compressed.length, 
+      32768, 
+      function(index) {
+        return compressed.charCodeAt(index);
+      }
+    );
   },
 
   _decompress: function (length, resetValue, getNextValue) {

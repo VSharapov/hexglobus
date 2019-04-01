@@ -7,7 +7,8 @@
 // For more information, the home page:
 // http://pieroxy.net/blog/pages/lz-string/index.html
 //
-// Base64 compression / decompression for already compressed content (gif, png, jpg, mp3, ...) 
+// Base64 compression / decompression for already compressed content
+// (gif, png, jpg, mp3, ...) 
 // version 1.4.1
 var Base64String = {
   
@@ -79,7 +80,10 @@ var Base64String = {
           current = (c & 16383) << 1;
           break;
         case 14:
-          output.push(String.fromCharCode((current + (c >> 15))+32, (c & 32767)+32));
+          output.push(String.fromCharCode(
+            (current + (c >> 15))+32, 
+            (c & 32767)+32
+          ));
           status = 0;
           break;
       }
@@ -274,7 +278,8 @@ var Base64String = {
     if (flush) {
       output.push(String.fromCharCode(output_));
       output = output.join('');
-      output = String.fromCharCode(output.charCodeAt(0)|256) + output.substring(1);
+      output = String.fromCharCode(output.charCodeAt(0)|256) + 
+        output.substring(1);
     } else {
       output = output.join('');
     }
