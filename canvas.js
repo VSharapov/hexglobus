@@ -57,31 +57,33 @@ function drawScene(sceneSettings, hexagons) {
     var centralHex = (
       screenCoords.x == sceneSettings.canvas.width/2 &&
       screenCoords.y == sceneSettings.canvas.height/2);
-    drawHexagon(
-      sceneSettings.canvasContext,
-      screenCoords.x,
-      screenCoords.y,
-      sceneSettings.hexMinorDiameter,
-      hexagon
-    );
-    if(centralHex){
-      drawSimpleHexagon(
+    setTimeout(function(){
+      drawHexagon(
         sceneSettings.canvasContext,
         screenCoords.x,
         screenCoords.y,
         sceneSettings.hexMinorDiameter,
-        "#000000",
-        0.85
+        hexagon
       );
-      drawSimpleHexagon(
-        sceneSettings.canvasContext,
-        screenCoords.x,
-        screenCoords.y,
-        sceneSettings.hexMinorDiameter * 0.95,
-        "#FFFFFF",
-        0.95
-      );
-    }
+      if(centralHex){
+        drawSimpleHexagon(
+          sceneSettings.canvasContext,
+          screenCoords.x,
+          screenCoords.y,
+          sceneSettings.hexMinorDiameter,
+          "#000000",
+          0.85
+        );
+        drawSimpleHexagon(
+          sceneSettings.canvasContext,
+          screenCoords.x,
+          screenCoords.y,
+          sceneSettings.hexMinorDiameter * 0.95,
+          "#FFFFFF",
+          0.95
+        );
+      }
+    }, 0);
   });
   // // Draws 1/4 and 3/4 lines for height and width. If you multiply all canvas
   // // width/height references by 0.5 this is really useful for debugging
