@@ -124,13 +124,36 @@ Hexagon.prototype.childHexes = function (generateIfMissing, hexagonSettings) {
 
 function Hexagons() {
   this.list = []
+  this.sxy = {}
 }
 
 Hexagons.prototype.getHex = function (scale, x, y) {
-  function checkByCoordinates(someHex){
-    return someHex.x == x && someHex.y == y && someHex.scale == scale;
+  if(scale in this.sxy == false){return undefined;}
+  if(x in this.sxy[scale] == false){return undefined;}
+  if(y in this.sxy[scale][x] == false){return undefined;}
+  else{return this.sxy[scale][x][y]}
+}
+
+Hexagons.prototype.sxyAdd = function (hex) {
+  var s = hex.scale
+  var x = hex.x
+  var y = hex.y
+
+  if(s in this.sxy == false){
+    this.sxy[s] = {}
   }
-  return this.list.find(checkByCoordinates);
+  if(x in this.sxy[s] == false){
+    this.sxy[s][x] = {}
+  }
+  var retval = y in this.sxy[s][x];
+  if(retval){
+    console.log("Weird, this hex just got overwritten:")
+    console.log(this.sxy[s][x][y])
+    console.log("...with this one")
+    console.log(hex)
+  }
+  this.sxy[s][x][y] = hex;
+  return retval;
 }
 
 Hexagons.prototype.generateVisible = function (visibility, hexagonSettings) {
@@ -140,7 +163,7 @@ Hexagons.prototype.generateVisible = function (visibility, hexagonSettings) {
       visibility.list[i].x,
       visibility.list[i].y
     ) == undefined){
-      this.list.push(new Hexagon(
+      newHex = new Hexagon(
         this,
         hexagonSettings,
         visibility.list[i].scale,
@@ -148,7 +171,9 @@ Hexagons.prototype.generateVisible = function (visibility, hexagonSettings) {
         visibility.list[i].y,
         "",
         "" + visibility.list[i].x + "," + visibility.list[i].y
-      ));
+      )
+      this.list.push(newHex);
+      this.sxyAdd(newHex);
     }
   }
 }
